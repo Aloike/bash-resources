@@ -1,8 +1,8 @@
 # This file shall be included in your bashrc file ; for example :
-# FILEPATH_PROMPT='/home/<username>/scripts/bash/prompt/prompt-v1.sh'
-# if [ -f ${FILEPATH_PROMPT} ]; then
-#     . ${FILEPATH_PROMPT}
-# fi
+# FILEPATH_PROMPT='/home/<username>/scripts/bash/prompt/prompt-v1.sh'
+# if [ -f ${FILEPATH_PROMPT} ]; then
+#     . ${FILEPATH_PROMPT}
+# fi
 #
 # Bash fonts
 #
@@ -218,9 +218,9 @@ function bash_prompt_command()
 {
         echo -e "\$(_box_retCode)\n"
 
-        echo -en "\$(_screen_split)"
-        echo -en "\$(_screen_split)"
-        echo "\n"
+#        echo -en "\$(_screen_split)"
+#        echo -en "\$(_screen_split)"
+#        echo "\n"
 
         echo -en "${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_DOWN_AND_RIGHT}"
         echo -en "${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}$(_box_userAndHost)"
