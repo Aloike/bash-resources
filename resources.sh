@@ -26,6 +26,12 @@ log_action_begin_msg "Loading user aliases"
 log_action_end_msg $?
 
 
+FILEPATH_FUNCTIONS="${BASEDIR_RESOURCES}/functions.sh"
+log_action_begin_msg "Loading user functions"
+. ${FILEPATH_FUNCTIONS}
+log_action_end_msg $?
+
+
 FILEPATH_PROMPT="${BASEDIR_RESOURCES}/prompt/prompt-v1.sh"
 log_action_begin_msg "Loading Bash custom prompt"
 source ${FILEPATH_PROMPT}
