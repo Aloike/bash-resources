@@ -126,22 +126,49 @@ function _box_path()
 
 
 
+# keep track of the last executed command
+trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
+
 function _box_retCode()
 {
-        local lRetVal=$?
-        if [[ "${lRetVal}" = "0" ]]
-        then
-                psLastRetCodeStr="${FMT_BLD}${COL_FG_GRN}OK${FMT_STD}"
-        else
-                psLastRetCodeStr="${FMT_BLD}${FMT_BLI}${COL_FG_RED}An error occured (ret=${lRetVal}).${FMT_STD}"
-        fi
+	local lRetVal=$?
 
-        local lOutput=""
-        lOutput+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_VERTICAL}\n"
-        lOutput+="${C_BOX_DRAWINGS_LIGHT_UP_AND_RIGHT}"
-        lOutput+="${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}${C_BLACK_RIGHT_POINTING_TRIANGLE}"
-        lOutput+="[${psLastRetCodeStr}${_COL_CONTOUR}]${FMT_STD}\n"
-        echo -e "${lOutput}"
+	local lOutput=""
+	lOutput+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_VERTICAL}\n"
+
+
+	if [[ "${lRetVal}" = "0" ]]
+	then
+		# If exit code is 0 then just write a "OK" in a box
+		lOutput+="${C_BOX_DRAWINGS_LIGHT_UP_AND_RIGHT}"
+		lOutput+="${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}${C_BLACK_RIGHT_POINTING_TRIANGLE}"
+		lOutput+="[${FMT_BLD}${COL_FG_GRN}OK${FMT_STD}${_COL_CONTOUR}]"
+	else
+		# If exit code is not null, display the last command and
+		# the exit code in boxes.
+
+		# First line : Command : Draw the horizontal line
+		lOutput+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_VERTICAL_AND_RIGHT}"
+		lOutput+="${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}"
+
+		# First line : Command : Draw the box containing the last cmd
+		lOutput+="[${FMT_STD}${current_command}${_COL_CONTOUR}]\n"
+
+		# Second line : Exit code : Draw the horizontal line
+		lOutput+="${C_BOX_DRAWINGS_LIGHT_UP_AND_RIGHT}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}"
+
+		# Second line : Exit code : Draw the value in a box
+		lOutput+="[${FMT_STD}${FMT_BLD}${lRetVal}${FMT_STD}${_COL_CONTOUR}]"
+
+		# Second line : Exit code : Draw another horizontal line
+		lOutput+="${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}${C_BLACK_RIGHT_POINTING_TRIANGLE}"
+
+		# Second line : Exit code : Draw a blinking text.
+		lOutput+="${FMT_BLD}${FMT_BLI}${COL_FG_RED} An error occured.${FMT_STD}"
+	fi
+
+	lOutput+="${FMT_STD}\n"
+	echo -e "${lOutput}"
 }
 
 
