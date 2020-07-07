@@ -11,8 +11,41 @@
 ## fi
 
 
+OS_NAME=$(source /etc/os-release /etc/redhat-release ; echo ${NAME})
+OS_ID_LIKE=$(source /etc/os-release /etc/redhat-release ; echo ${ID_LIKE})
+echo "OS name : ${OS_NAME}"
+echo "OS like : ${OS_ID_LIKE}"
+
+
 # To have access to "status" traces
-source /lib/lsb/init-functions
+if [[ "${OS_ID_LIKE}" =~ .*debian.* ]]
+then
+	# This is a Debian/Ubuntu
+	source /lib/lsb/init-functions
+
+	function F_action()
+	{
+		log_action_begin_msg "$1"
+		shift
+		$@
+		log_action_end_msg $?
+	}
+
+#elif [ -f /etc/redhat-release ]
+elif [[ "${OS_ID_LIKE}" =~ .*fedora.* ]]
+then
+	# This is a Fedora/RedHat
+	source /etc/init.d/functions
+
+	function F_action()
+	{
+		local lMsg="$1"
+		shift
+		action "${lMsg}" $@
+	}
+else
+	echo "${BASH_SOURCE} +${BASH_LINENO} : WARNING : Unknown os kind!"
+fi
 
 
 # Determine the directory in which this script is
@@ -21,18 +54,12 @@ BASEDIR_RESOURCES="$(dirname $BASH_SOURCE)"
 
 
 FILEPATH_ALIASES="${BASEDIR_RESOURCES}/aliases.sh"
-log_action_begin_msg "Loading user aliases"
-. ${FILEPATH_ALIASES}
-log_action_end_msg $?
+F_action "Loading user aliases" source ${FILEPATH_ALIASES}
 
 
 FILEPATH_FUNCTIONS="${BASEDIR_RESOURCES}/functions.sh"
-log_action_begin_msg "Loading user functions"
-. ${FILEPATH_FUNCTIONS}
-log_action_end_msg $?
+F_action "Loading user functions" source ${FILEPATH_FUNCTIONS}
 
 
 FILEPATH_PROMPT="${BASEDIR_RESOURCES}/prompt/prompt-v1.sh"
-log_action_begin_msg "Loading Bash custom prompt"
-source ${FILEPATH_PROMPT}
-log_action_end_msg $?
+F_action "Loading Bash custom prompt" source ${FILEPATH_PROMPT}
