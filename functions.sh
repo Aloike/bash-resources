@@ -20,7 +20,8 @@ function	git_aliases()
 	alias gk='gitk --all'
 	alias gl='git log --graph --oneline --all'
 	alias gm='git merge --no-ff --no-commit'
-	alias gp='git push'
+	alias gp='git pull'
+	alias gP='git push'
 	alias gs='git status'
 
 	g_git_aliases_enabled=1
