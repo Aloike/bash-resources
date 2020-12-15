@@ -1,8 +1,12 @@
+# ##############################################################################
+##  @see    https://www.thegeekstuff.com/2008/09/bash-shell-take-control-of-ps1-ps2-ps3-ps4-and-prompt_command/
+#
 # This file shall be included in your bashrc file ; for example :
 # FILEPATH_PROMPT='/home/<username>/scripts/bash/prompt/prompt-v1.sh'
 # if [ -f ${FILEPATH_PROMPT} ]; then
 #     . ${FILEPATH_PROMPT}
 # fi
+# ##############################################################################
 #
 # Bash fonts
 #
@@ -63,68 +67,6 @@ C_BLACK_RIGHT_POINTING_POINTER=`printf '\xe2\x96\xba'`
 _COL_CONTOUR="${COL_FG_LRED}"
 
 
-function	bash_prompt_command_gitInfos()
-{
-	local lGitStr=""
-	local lGitPath="$(git rev-parse --show-toplevel 2>/dev/null)"
-	if [ ! -z "${lGitPath}" ]
-	then
-		lGitLocalRepo=`basename ${lGitPath}`
-		lGitBranch=`git branch|sed --quiet -e '/^\*/ s@\* @@p'`
-
-		lGitPath=`pwd|sed -e 's@'"${lGitPath}"'@git:@' -e 's@/$@@'`
-
-		local lVar=""
-		lVar+="\n${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_VERTICAL_AND_RIGHT}"
-
-                lVar+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}["
-		if [ "${g_git_aliases_enabled}" = "1" ]
-		then
-			lVar+="${FMT_BLD}${COL_BG_GRN}${COL_FG_BLK}"
-		else
-			lVar+="${FMT_BLD}${COL_FG_RED}"
-		fi
-		lVar+="Git${FMT_STD}"
-		lVar+="${_COL_CONTOUR}]"
-
-                lVar+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}["
-		lVar+="${COL_FG_GRN}${lGitLocalRepo}"
-		lVar+="${_COL_CONTOUR}]"
-
-                lVar+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}["
-		lVar+="${COL_FG_YLW}${lGitBranch}"
-		lVar+="${_COL_CONTOUR}]"
-
-                lVar+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}["
-		lVar+="${COL_FG_YLW}${lGitPath}"
-		lVar+="${_COL_CONTOUR}]"
-
-		echo -en "${lVar}"
-	fi
-}
-
-
-
-function _box_path()
-{
-#        # Improve path display
-#        local lPWD="$(pwd)"
-#        lPWD="$(echo ${lPWD}|sed s@^${HOME}@~@)"
-
-
-        local lOutput=""
-        lOutput+="${_COL_CONTOUR}["
-
-        # Display path
-        lOutput+="${COL_FG_LMAG}\w"
-
-        # Separator at end of line
-        lOutput+="${_COL_CONTOUR}]"
-
-        echo -en "${lOutput}"
-}
-
-
 
 # keep track of the last executed command
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
@@ -172,37 +114,6 @@ function _box_retCode()
 }
 
 
-function _box_userAndHost()
-{
-        local retval=""
-
-        retval+=""
-        retval+="${_COL_CONTOUR}["
-        retval+="${COL_FG_GRN}$(whoami)"
-
-        # Separator between username and hostname
-        retval+="${COL_FG_YLW}${FMT_BLD}@"
-
-        # Prepare hostname string
-        # Display hostname
-        local	lHostnameFQDNS="$(hostname --fqdn| sed -e 's@[[:space:]]*$@@')"
-        case "${lHostnameFQDNS}" in
-                "HP-x360")
-                        retval+="${FMT_STD}${COL_FG_CYN}${lHostnameFQDNS}${FMT_STD}"
-                        ;;
-                *)
-                        retval+="${FMT_STD}${COL_FG_BLK}${COL_BG_RED}${lHostnameFQDNS}${FMT_STD}"
-                        ;;
-        esac
-
-        retval+=""
-        retval+="${_COL_CONTOUR}]"
-
-
-        echo -en "${retval}"
-}
-
-
 
 function    _screen_split()
 {
@@ -214,24 +125,48 @@ function    _screen_split()
 
 
 
-function bash_prompt_command()
+function _prompt_PS1()
 {
-        echo -e "\$(_box_retCode)\n"
+		echo -e "\$(_box_retCode)\n"
 
 #        echo -en "\$(_screen_split)"
 #        echo -en "\$(_screen_split)"
 #        echo "\n"
 
-        echo -en "${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_DOWN_AND_RIGHT}"
-        echo -en "${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}$(_box_userAndHost)"
-        echo -en "${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}$(_box_path)"
-        echo -en "\$(bash_prompt_command_gitInfos)"
-        echo -en "\n${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_VERTICAL}\n"
+		for i in "${PROMPT_PS1_FUNCTIONS[@]}"
+		do   
+			echo -en "\$(${i})"
+			# echo -en "\${PROMPT_FUNCTIONS[$i]}"
+		done
+
+		echo -en "\n${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_VERTICAL}\n"
 }
+
+
+THIS_SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+
+declare -a	PROMPT_PS1_FUNCTIONS
+
+DIR_PROMPT_ELEMENTS_PS1="${THIS_SCRIPTDIR}/elements-ps1"
+
+for lFile in `find ${DIR_PROMPT_ELEMENTS_PS1} -type f -iname *.bash|sort`
+do
+	lFileName=`echo ${lFile}|sed 's@'"${THIS_SCRIPTDIR}"'/*@@'`
+	F_action "Sourcing '${lFileName}'" \
+		source "${lFile}"
+done
 
 
 
 #export PROMPT_COMMAND="echo $(bash_prompt_command)"
 export PROMPT_COMMAND=""
-export PS1="\[$(bash_prompt_command)\n\]   \[\r${C_BOX_DRAWINGS_LIGHT_VERTICAL_AND_RIGHT}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}${C_BLACK_RIGHT_POINTING_TRIANGLE}${FMT_BLD}${COL_FG_YLW} \]\$ \[${FMT_STD}\]"
+
+# PS1 - Default interaction prompt
+export PS1="\[$(_prompt_PS1)\n\]   \[\r${C_BOX_DRAWINGS_LIGHT_VERTICAL_AND_RIGHT}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}${C_BLACK_RIGHT_POINTING_TRIANGLE}${FMT_BLD}${COL_FG_YLW} \]\$ \[${FMT_STD}\]"
+
+# PS2 - Continuation interactive prompt
 export PS2="   \[\r${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_VERTICAL_AND_RIGHT}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}${C_WHITE_RIGHT_POINTING_TRIANGLE}${FMT_STD}\] "
+
+# PS3 - Prompt used by “select” inside shell script
+# PS4 - Used by “set -x” to prefix tracing output
