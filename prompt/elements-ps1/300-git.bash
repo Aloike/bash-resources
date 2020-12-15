@@ -20,9 +20,11 @@ function	bash_prompt_command_gitInfos()
 		lVar+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}["
 		if [ "${g_git_aliases_enabled}" = "1" ]
 		then
-			lVar+="${FMT_BLD}${COL_BG_GRN}${COL_FG_BLK}"
+			# lVar+="${FMT_BLD}${COL_BG_GRN}${COL_FG_BLK}"
+			lVar+="${FMT_BLD}${COL_FG_GRN}"
 		else
-			lVar+="${FMT_BLD}${COL_FG_RED}"
+			# lVar+="${FMT_BLD}${COL_FG_RED}"
+			lVar+="${FMT_BLD}${COL_BG_RED}${COL_FG_BLK}"
 		fi
 		lVar+="Git${FMT_STD}"
 		lVar+="${_COL_CONTOUR}]"
