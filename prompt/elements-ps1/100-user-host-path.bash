@@ -52,7 +52,7 @@ function _box_userAndHost()
 			retval+="${FMT_STD}${COL_FG_CYN}${lHostnameFQDNS}${FMT_STD}"
 			;;
 		*)
-			retval+="${FMT_STD}${COL_FG_BLK}${COL_BG_CYN}${lHostnameFQDNS}${FMT_STD}"
+			retval+="${FMT_STD}${COL_FG_BLK}${COL_BG_RED}${lHostnameFQDNS}${FMT_STD}"
 			;;
 	esac
 
