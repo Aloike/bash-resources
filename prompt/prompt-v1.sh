@@ -150,7 +150,7 @@ declare -a	PROMPT_PS1_FUNCTIONS
 
 DIR_PROMPT_ELEMENTS_PS1="${THIS_SCRIPTDIR}/elements-ps1"
 
-for lFile in `find ${DIR_PROMPT_ELEMENTS_PS1} -type f -iname *.bash|sort`
+for lFile in `find ${DIR_PROMPT_ELEMENTS_PS1} -type f -iname '*.bash'|sort`
 do
 	lFileName=`echo ${lFile}|sed 's@'"${THIS_SCRIPTDIR}"'/*@@'`
 	F_action "Sourcing '${lFileName}'" \
