@@ -29,5 +29,5 @@ FILEPATH_FUNCTIONS="${BASEDIR_RESOURCES}/functions.sh"
 F_action "Loading user functions" source ${FILEPATH_FUNCTIONS}
 
 
-FILEPATH_PROMPT="${BASEDIR_RESOURCES}/prompt/prompt-v1.sh"
+FILEPATH_PROMPT="${BASEDIR_RESOURCES}/prompt/prompt.sh"
 F_action "Loading Bash custom prompt" source ${FILEPATH_PROMPT}
