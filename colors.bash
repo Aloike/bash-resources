@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# ##############################################################################
+##  @file   colors.bash
+##  @brief  Defines control sequence to display colors in a Bash shell.
+##
+##  @note   How to set RGB values
+##  There is a way to use RGB values in some terminals:
+##  + For the background color, the sequence is `\033[48;2;R;G;Bm` (e.g.
+##    `\033[48;2;255;64;0m Hello \033[0m`).
+##  + For the foreground color, the sequence is `\033[38;2;R;G;Bm` (e.g.
+##    `\033[38;2;255;64;0m Hello \033[0m`).
+##
+##  @see
+##  + http://www.perbang.dk/rgb/ : Color picker.
+# ##############################################################################
+
 
 # ------------------------------------------------------------------------------
 #   Bash control chars definitions
@@ -49,6 +64,8 @@ COL_FG_BLU="${ESC_CHAR}[34m"	# Foreground blue
 COL_FG_MAG="${ESC_CHAR}[35m"	# Foreground magenta
 COL_FG_CYN="${ESC_CHAR}[36m"	# Foreground cyan
 COL_FG_GRY="${ESC_CHAR}[90m"	# Foreground gray
+COL_FG_GRY50="${ESC_CHAR}[38;2;127;127;127m"	# Foreground gray 50%
+COL_FG_GRY75="${ESC_CHAR}[38;2;191;191;191m"	# Foreground gray 75%
 COL_FG_WHT="${ESC_CHAR}[97m"	# Foreground white
 
 COL_FG_LGRY="${ESC_CHAR}[37m"	# Foreground light gray
