@@ -2,6 +2,18 @@
 
 PROMPT_PS1_FUNCTIONS+=("bash_prompt_command_gitInfos")
 
+# Set default format variables
+# These values can be overridden in ~/.zshrc or ~/.bashrc
+PROMPT_FMT_GIT_ALIASES_ENABLED="${PROMPT_FMT_GIT_ALIASES_ENABLED-${COL_FG_GRN}}"
+PROMPT_FMT_GIT_ALIASES_DISABLED="${PROMPT_FMT_GIT_ALIASES_DISABLED-${FMT_BLD}${COL_BG_RED}${COL_FG_BLK}}"
+PROMPT_FMT_GIT_BRANCH="${PROMPT_FMT_GIT_BRANCH-${COL_FG_LGRY}}"
+PROMPT_FMT_GIT_LOCALREPO="${PROMPT_FMT_GIT_LOCALREPO-${COL_FG_LMAG}}"
+PROMPT_FMT_GIT_PATH="${PROMPT_FMT_GIT_PATH-${COL_FG_CYN}}"
+
+
+
+# ##############################################################################
+# ##############################################################################
 
 function	bash_prompt_command_gitInfos()
 {
@@ -14,33 +26,43 @@ function	bash_prompt_command_gitInfos()
 
 		lGitPath=`pwd|sed -e 's@'"${lGitPath}"'@git:@' -e 's@/$@@'`
 
-		local lVar=""
-		lVar+="\n${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_VERTICAL_AND_RIGHT}"
+		local lFormat=""
+		local lData=""
 
-		lVar+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}["
+		_prompt_echo_startOfLine_intermediary
+
 		if [ "${g_git_aliases_enabled}" = "1" ]
 		then
 			# lVar+="${FMT_BLD}${COL_BG_GRN}${COL_FG_BLK}"
-			lVar+="${FMT_BLD}${COL_FG_GRN}"
+			lFormat="${PROMPT_FMT_GIT_ALIASES_ENABLED}"
 		else
 			# lVar+="${FMT_BLD}${COL_FG_RED}"
-			lVar+="${FMT_BLD}${COL_BG_RED}${COL_FG_BLK}"
+			lFormat="${PROMPT_FMT_GIT_ALIASES_DISABLED}"
 		fi
-		lVar+="Git${FMT_STD}"
-		lVar+="${_COL_CONTOUR}]"
+		lData="Git"
 
-		lVar+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}["
-		lVar+="${COL_FG_GRN}${lGitLocalRepo}"
-		lVar+="${_COL_CONTOUR}]"
+		_prompt_echo_box	\
+			"${lFormat}"	\
+			"${lData}"
 
-		lVar+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}["
-		lVar+="${COL_FG_YLW}${lGitBranch}"
-		lVar+="${_COL_CONTOUR}]"
+		_prompt_echo_boxSeparator
+		_prompt_echo_box	\
+			"${PROMPT_FMT_GIT_LOCALREPO}"	\
+			"${lGitLocalRepo}"
 
-		lVar+="${_COL_CONTOUR}${C_BOX_DRAWINGS_LIGHT_HORIZONTAL}["
-		lVar+="${COL_FG_YLW}${lGitPath}"
-		lVar+="${_COL_CONTOUR}]"
+		_prompt_echo_boxSeparator
+		_prompt_echo_box	\
+			"${PROMPT_FMT_GIT_BRANCH}"	\
+			"${lGitBranch}"
+
+		_prompt_echo_boxSeparator
+		_prompt_echo_box	\
+			"${PROMPT_FMT_GIT_PATH}"	\
+			"${lGitPath}"
 
 		echo -en "${lVar}"
 	fi
 }
+
+# ##############################################################################
+# ##############################################################################
