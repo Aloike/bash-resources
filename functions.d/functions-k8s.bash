@@ -29,6 +29,15 @@ function	K8s_aliases()
 	# extend shell completion to work with that alias
 	complete -F __start_kubectl k
 
+	# Create aliases related to context
+	alias k_context_list='kubectl config get-contexts'
+	alias k_context_switch='kubectl config set-context'
+
+	# Create aliases related to namespaces
+	alias k_namespace_list='kubectl get namespaces'
+	alias k_namespace_switch='_k8s_namespace_set'
+
+
 	g_k8s_aliases_enabled=1
 	export g_k8s_aliases_enabled
 
@@ -38,3 +47,10 @@ function	K8s_aliases()
 
 # ##############################################################################
 # ##############################################################################
+
+function	_k8s_namespace_set()
+{
+	pNamespace="$1"
+
+	kubectl config set-context --current --namespace="${pNamespace}"
+}
