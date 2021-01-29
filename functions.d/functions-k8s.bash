@@ -54,7 +54,7 @@ function	_k8s_namespace_use()
 {
 	pNamespace="$1"
 
-	kubectl config use-context --current --namespace="${pNamespace}"
+	kubectl config set-context --current --namespace="${pNamespace}"
 }
 
 # ##############################################################################
