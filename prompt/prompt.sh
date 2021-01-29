@@ -31,7 +31,14 @@ function	_prompt_PS1_load_functions()
 {
 	echo "_prompt_PS1_load_functions called."
 
+	echo "Reset PROMPT_COMMAND..."
+	unset PROMPT_COMMAND
+
 	DIR_PROMPT_ELEMENTS_PS1="${THIS_SCRIPTDIR}/elements-ps1"
+
+	# Clear prompt functions list
+	#unset $PROMPT_PS1_FUNCTIONS
+	#export PROMPT_PS1_FUNCTIONS
 
 	for lFile in `find ${DIR_PROMPT_ELEMENTS_PS1} -type f -iname '*.bash'|sort`
 	do

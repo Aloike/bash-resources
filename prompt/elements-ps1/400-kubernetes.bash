@@ -158,7 +158,7 @@ _kube_ps1_box_name()
 
 	local	lFormat="${PROMPT_FMT_K8S_NAME}"
 	local	lData=""
-	
+
 	# lData+="$(_kube_ps1_symbol) "
 	lData+="k8s"
 
@@ -359,6 +359,7 @@ function	bash_prompt_command_kubernetes()
 	fi
 
 
+	_kube_ps1_get_context_ns
 	_prompt_echo_startOfLine_intermediary
 	_kube_ps1_box_name
 
@@ -389,3 +390,4 @@ _kube_ps1_init
 
 # ##############################################################################
 # ##############################################################################
+
