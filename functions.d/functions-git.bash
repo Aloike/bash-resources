@@ -18,7 +18,7 @@ function	git_aliases()
 	alias gf='git fetch'
 	alias gg='git gui'
 	alias gk='gitk --all'
-	alias gl='git log --graph --oneline --all'
+	alias gl='git log --graph --oneline --all --color'
 	alias gm='git merge --no-ff --no-commit'
 	alias gp='git pull'
 	alias gP='git push'
