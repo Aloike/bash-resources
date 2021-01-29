@@ -18,7 +18,7 @@
 ##  @par References
 ##  + https://kubernetes.io/docs/tasks/tools/install-kubectl/#enable-kubectl-autocompletion
 ##
-function	K8s_aliases()
+function	k8s_aliases()
 {
 	# Source the completion script in your ~/.bashrc file
 	source <(kubectl completion bash)
@@ -31,11 +31,11 @@ function	K8s_aliases()
 
 	# Create aliases related to context
 	alias k_context_list='kubectl config get-contexts'
-	alias k_context_switch='kubectl config set-context'
+	alias k_context_switch='kubectl config use-context'
 
 	# Create aliases related to namespaces
 	alias k_namespace_list='kubectl get namespaces'
-	alias k_namespace_switch='_k8s_namespace_set'
+	alias k_namespace_switch='_k8s_namespace_use'
 
 
 	g_k8s_aliases_enabled=1
@@ -48,9 +48,9 @@ function	K8s_aliases()
 # ##############################################################################
 # ##############################################################################
 
-function	_k8s_namespace_set()
+function	_k8s_namespace_use()
 {
 	pNamespace="$1"
 
-	kubectl config set-context --current --namespace="${pNamespace}"
+	kubectl config use-context --current --namespace="${pNamespace}"
 }
