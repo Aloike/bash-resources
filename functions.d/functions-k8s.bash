@@ -29,6 +29,8 @@ function	k8s_aliases()
 	# extend shell completion to work with that alias
 	complete -F __start_kubectl k
 
+	alias k_applyRecursively='_k8s_applyRecursively'
+
 	# Create aliases related to context
 	alias k_context_list='kubectl config get-contexts'
 	alias k_context_switch='kubectl config use-context'
@@ -54,3 +56,30 @@ function	_k8s_namespace_use()
 
 	kubectl config use-context --current --namespace="${pNamespace}"
 }
+
+# ##############################################################################
+# ##############################################################################
+
+function	_k8s_applyRecursively()
+{
+	# Iterate over each parameter given to the function
+	for lParam in "$@"
+	do
+		# If the parameter is a directory, then recursively call this
+		# function.
+		# Otherwise, try to apply the file.
+		if [ -d "${lParam}" ]
+		then
+			for lDirEntry in `find "${lParam}" -mindepth 1 -maxdepth 1|sort`
+			do
+				_k8s_applyRecursively "${lDirEntry}"
+			done
+		else
+			kubectl apply -f "${lParam}"
+		fi
+	done
+}
+
+# ##############################################################################
+# ##############################################################################
+
