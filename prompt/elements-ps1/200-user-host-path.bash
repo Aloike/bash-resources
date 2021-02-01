@@ -8,6 +8,7 @@ PROMPT_FMT_HOST_UNKNOWN="${PROMPT_FMT_HOST_UNKNOWN-${FMT_STD}${COL_FG_BLK}${COL_
 PROMPT_FMT_PWD="${PROMPT_FMT_PWD-${COL_FG_YLW}}"
 PROMPT_FMT_SEP_USERANDHOST="${PROMPT_FMT_SEP_USERANDHOST-${COL_FG_YLW}${FMT_BLD}}"
 PROMPT_FMT_USERNAME="${PROMPT_FMT_USERNAME-${COL_FG_GRN}}"
+PROMPT_FMT_USERNAME_ROOT="${PROMPT_FMT_USERNAME_ROOT-${FMT_STD}${COL_FG_BLK}${COL_BG_RED}}"
 
 # ##############################################################################
 # ##############################################################################
@@ -46,8 +47,19 @@ function    _prompt_box_userAndHost()
 	local lData=""
 
 	# Get the user name
-	lData+="${PROMPT_FMT_USERNAME}"
-	lData+="$(whoami)"
+	local lUsername="$(whoami)"
+
+	# Set username format depending on whether it's root or not.
+	case "${lUsername}" in
+		"root")
+			lData+="${PROMPT_FMT_USERNAME_ROOT}"
+			;;
+		*)
+			lData+="${PROMPT_FMT_USERNAME}"
+			;;
+	esac
+	lData+="${lUsername}${FMT_STD}"
+
 
 	# Add a separator between username and hostname
 	lData+="${PROMPT_FMT_SEP_USERANDHOST}@"
