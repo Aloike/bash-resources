@@ -34,7 +34,12 @@ then
 elif [[ "${OS_ID_LIKE}" =~ .*fedora.* ]]
 then
 	# This is a Fedora/RedHat
+
+	# We have to backup the path as sourcing the functions will reset it...
+	lPathPrevious="${PATH}"
 	source /etc/init.d/functions
+	PATH="${lPathPrevious}"
+	export PATH
 
 	function F_action()
 	{
