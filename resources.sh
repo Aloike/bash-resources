@@ -3,7 +3,7 @@
 ## To use this resources file, just 'source' it into your `~/.bashrc` file or
 ## any equivalent (eg. `~/.bash_profile`). For example, like this:
 ##
-## FILEPATH_CUSTOM_RESOURCES="/home/${USER}/scripts/bash/resources/resources.sh"
+## FILEPATH_CUSTOM_RESOURCES="${HOME}/scripts/bash/resources/resources.sh"
 ## if [ -f ${FILEPATH_CUSTOM_RESOURCES} ]; then
 ##     source ${FILEPATH_CUSTOM_RESOURCES}
 ## else
