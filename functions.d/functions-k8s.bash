@@ -64,6 +64,9 @@ function	k8s_aliases()
 
 function	_k8s_applyRecursively()
 {
+	local lRet=0
+
+
 	# Iterate over each parameter given to the function
 	for lParam in "$@"
 	do
@@ -72,14 +75,72 @@ function	_k8s_applyRecursively()
 		# Otherwise, try to apply the file.
 		if [ -d "${lParam}" ]
 		then
+			echo -e "${COL_FG_BLU}+-- Entering directory: '${lParam}'${CLR_EOL}${FMT_CLR}"
+
 			for lDirEntry in `find "${lParam}" -mindepth 1 -maxdepth 1|sort`
 			do
 				_k8s_applyRecursively "${lDirEntry}"
+				lRet="$?"
+
+				if [[ "$lRet" != "0" ]]
+				then
+					echo "Error!"
+					return ${lRet}
+				fi
 			done
+		elif [[ "${lParam}" =~ .*\.ya*ml$ ]]
+		then
+			echo -e "${COL_FG_BLU}+-- Applying file: '${lParam}'${CLR_EOL}${FMT_CLR}"
+			kubectl apply -f "${lParam}" | lRet="$?" sed -e 's@.*@    +-- &@'	\
+				| __k8s_applyRecursively_highlight_pattern 'configured$' "${COL_BG_CYN}"	\
+				| __k8s_applyRecursively_highlight_pattern 'created$' "${COL_BG_GRN}"	\
+				| __k8s_applyRecursively_highlight_pattern 'unchanged$' "${COL_BG_GRY}"	\
+				| __k8s_applyRecursively_highlight_ifNoAnsiCode
+			if [[ "$lRet" != "0" ]]
+			then
+				echo "Error!"
+				return ${lRet}
+			fi
 		else
-			${CMD_KUBECTL} apply -f "${lParam}"
+			echo -e "${COL_FG_ORG}+-- Unknown file type: '${lParam}'${CLR_EOL}${FMT_CLR}"
 		fi
 	done
+
+
+	return ${lRet}
+}
+
+# ##############################################################################
+# ##############################################################################
+
+function	__k8s_applyRecursively_highlight_ifNoAnsiCode()
+{
+	read pInput     # from https://stackoverflow.com/a/11457183/1303262
+
+	if [[ `echo -e "${pInput}" | sed -r "/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]/d"|wc -l` = "0" ]]
+	then
+		echo "${pInput}"
+	else
+		echo "${pInput}"        \
+			| sed -e 's@\(^.*$\)@'"$(echo -e ${COL_BG_RED})"'\1'"$(echo -e ${FMT_CLR})@"
+	fi
+}
+
+# ##############################################################################
+# ##############################################################################
+
+function	__k8s_applyRecursively_highlight_pattern()
+{
+	read pInput	# from https://stackoverflow.com/a/11457183/1303262
+
+	pPattern="$1"
+	shift
+	pColor="$1"
+	shift
+	#pInput="$@"
+
+	echo "${pInput}"	\
+		| sed -e 's@\('"${pPattern}"'\)@'"$(echo -e ${pColor})"'\1'"$(echo -e ${FMT_CLR})@"
 }
 
 # ##############################################################################
