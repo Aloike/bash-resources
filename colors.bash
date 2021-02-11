@@ -39,11 +39,14 @@ ESC_CHAR="\\e"	# Default is Linux definition.
 
 
 # Bash format definitions
-FMT_STD="${ESC_CHAR}[0m"	# Default format
+FMT_CLR="${ESC_CHAR}[0m"	# Clear formatting
+FMT_STD="${FMT_CLR}"		# Default format - Same as "Clear formatting".
 FMT_BLD="${ESC_CHAR}[1m"	# Bold
 FMT_UDL="${ESC_CHAR}[4m"	# Underline
 FMT_BLI="${ESC_CHAR}[5m"	# Blink
 
+##  @brief  Control char to fill a line.
+CLREOL="${ESC_CHAR}[K"
 
 
 # ------------------------------------------------------------------------------
@@ -217,7 +220,3 @@ COL_GRN="${ESC_CHAR}[30;42m"
 COL_ORG="${ESC_CHAR}[30;43m"
 COL_MAG="${ESC_CHAR}[30;45m"
 COL_YLW="${ESC_CHAR}[30;103m"
-
-
-##  @brief  Control char to fill a line.
-CLREOL="${ESC_CHAR}[K"
