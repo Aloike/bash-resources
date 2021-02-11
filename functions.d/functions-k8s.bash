@@ -38,9 +38,18 @@ function	k8s_aliases()
 	alias k_context_list="${CMD_KUBECTL} config get-contexts"
 	alias k_context_switch="${CMD_KUBECTL} config use-context"
 
+	alias k_deletePods_whereStatusFailed='kubectl delete pod --field-selector="status.phase==Failed"'
+
+	alias k_getPods='kubectl get pods'
+	alias k_getPods_byAge='kubectl get pods --sort-by=.status.startTime'
+
 	# Create aliases related to namespaces
 	alias k_namespace_list="${CMD_KUBECTL} get namespaces"
 	alias k_namespace_switch='__k8s_namespace_use'
+
+
+	alias k_ide_lens='kontena-lens'
+	alias k_ide_octant='octant'
 
 
 	g_k8s_aliases_enabled=1
