@@ -75,7 +75,7 @@ function	_k8s_applyRecursively()
 		# Otherwise, try to apply the file.
 		if [ -d "${lParam}" ]
 		then
-			echo -e "${COL_FG_BLU}+-- Entering directory: '${lParam}'${CLR_EOL}${FMT_CLR}"
+			echo -e "${COL_FG_GRY}+-- Entering directory: '${lParam}'${CLR_EOL}${FMT_CLR}"
 
 			for lDirEntry in `find "${lParam}" -mindepth 1 -maxdepth 1|sort`
 			do
@@ -84,21 +84,39 @@ function	_k8s_applyRecursively()
 
 				if [[ "$lRet" != "0" ]]
 				then
-					echo "Error!"
+					# echo "Error!"
 					return ${lRet}
 				fi
 			done
 		elif [[ "${lParam}" =~ .*\.ya*ml$ ]]
 		then
-			echo -e "${COL_FG_BLU}+-- Applying file: '${lParam}'${CLR_EOL}${FMT_CLR}"
-			${CMD_KUBECTL} apply -f "${lParam}" | lRet="$?" sed -e 's@.*@    +-- &@'	\
-				| __k8s_applyRecursively_highlight_pattern 'configured$' "${COL_BG_CYN}"	\
-				| __k8s_applyRecursively_highlight_pattern 'created$' "${COL_BG_GRN}"	\
-				| __k8s_applyRecursively_highlight_pattern 'unchanged$' "${COL_BG_GRY}"	\
-				| __k8s_applyRecursively_highlight_ifNoAnsiCode
+			echo -e "${COL_FG_WHT}+-- Applying file: '${lParam}'${CLR_EOL}${FMT_CLR}"
+
+			{
+				{
+					${CMD_KUBECTL} apply -f "${lParam}"	2>&3 \
+							| sed -e 's@.*@    +-- &@'	\
+							| __k8s_applyRecursively_highlight_pattern 'configured$' "${COL_BG_CYN}"	\
+							| __k8s_applyRecursively_highlight_pattern 'created$' "${COL_BG_GRN}"	\
+							| __k8s_applyRecursively_highlight_pattern 'unchanged$' "${COL_BG_GRY}"	\
+							| __k8s_applyRecursively_highlight_ifNoAnsiCode
+
+
+					lRet=${PIPESTATUS[0]}
+
+					return $lRet
+
+				# The following line is here to colorize anything that goes through stderr
+				}	3>&1 1>&2 | __k8s_applyRecursively_highlight_pattern '.*' "${COL_BG_BLK}${COL_FG_RED}"
+
+				lRet=${PIPESTATUS[0]}
+			 } 2>&1 1>&2 #< We set back the file descriptors the way they should be
+# \
+# 				| sed ':a;N;$!ba;s/\n/ /g'
+
 			if [[ "$lRet" != "0" ]]
 			then
-				echo "Error!"
+				echo "Error while applying file '${lParam}'!"
 				return ${lRet}
 			fi
 		else
@@ -119,9 +137,9 @@ function	__k8s_applyRecursively_highlight_ifNoAnsiCode()
 
 	if [[ `echo -e "${pInput}" | sed -r "/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]/d"|wc -l` = "0" ]]
 	then
-		echo "${pInput}"
+		echo -e "${pInput}"
 	else
-		echo "${pInput}"        \
+		echo -e "${pInput}"        \
 			| sed -e 's@\(^.*$\)@'"$(echo -e ${COL_BG_RED})"'\1'"$(echo -e ${FMT_CLR})@"
 	fi
 }
@@ -139,7 +157,7 @@ function	__k8s_applyRecursively_highlight_pattern()
 	shift
 	#pInput="$@"
 
-	echo "${pInput}"	\
+	echo -e "${pInput}"	\
 		| sed -e 's@\('"${pPattern}"'\)@'"$(echo -e ${pColor})"'\1'"$(echo -e ${FMT_CLR})@"
 }
 
