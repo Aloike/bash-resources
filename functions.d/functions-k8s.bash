@@ -40,7 +40,7 @@ function	k8s_aliases()
 
 	# Create aliases related to namespaces
 	alias k_namespace_list="${CMD_KUBECTL} get namespaces"
-	alias k_namespace_switch='_k8s_namespace_use'
+	alias k_namespace_switch='__k8s_namespace_use'
 
 
 	g_k8s_aliases_enabled=1
@@ -48,16 +48,6 @@ function	k8s_aliases()
 
 	KUBE_PS1_ENABLED=on
 	export KUBE_PS1_ENABLED
-}
-
-# ##############################################################################
-# ##############################################################################
-
-function	_k8s_namespace_use()
-{
-	pNamespace="$1"
-
-	${CMD_KUBECTL} config set-context --current --namespace="${pNamespace}"
 }
 
 # ##############################################################################
@@ -81,6 +71,16 @@ function	_k8s_applyRecursively()
 			${CMD_KUBECTL} apply -f "${lParam}"
 		fi
 	done
+}
+
+# ##############################################################################
+# ##############################################################################
+
+function	__k8s_namespace_use()
+{
+	pNamespace="$1"
+
+	kubectl config set-context --current --namespace="${pNamespace}"
 }
 
 # ##############################################################################
