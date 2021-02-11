@@ -38,10 +38,10 @@ function	k8s_aliases()
 	alias k_context_list="${CMD_KUBECTL} config get-contexts"
 	alias k_context_switch="${CMD_KUBECTL} config use-context"
 
-	alias k_deletePods_whereStatusFailed='kubectl delete pod --field-selector="status.phase==Failed"'
+	alias k_deletePods_whereStatusFailed="${CMD_KUBECTL} delete pod --field-selector='status.phase==Failed'"
 
-	alias k_getPods='kubectl get pods'
-	alias k_getPods_byAge='kubectl get pods --sort-by=.status.startTime'
+	alias k_getPods="${CMD_KUBECTL} get pods"
+	alias k_getPods_byAge="${CMD_KUBECTL} get pods --sort-by=.status.startTime"
 
 	# Create aliases related to namespaces
 	alias k_namespace_list="${CMD_KUBECTL} get namespaces"
@@ -91,7 +91,7 @@ function	_k8s_applyRecursively()
 		elif [[ "${lParam}" =~ .*\.ya*ml$ ]]
 		then
 			echo -e "${COL_FG_BLU}+-- Applying file: '${lParam}'${CLR_EOL}${FMT_CLR}"
-			kubectl apply -f "${lParam}" | lRet="$?" sed -e 's@.*@    +-- &@'	\
+			${CMD_KUBECTL} apply -f "${lParam}" | lRet="$?" sed -e 's@.*@    +-- &@'	\
 				| __k8s_applyRecursively_highlight_pattern 'configured$' "${COL_BG_CYN}"	\
 				| __k8s_applyRecursively_highlight_pattern 'created$' "${COL_BG_GRN}"	\
 				| __k8s_applyRecursively_highlight_pattern 'unchanged$' "${COL_BG_GRY}"	\
@@ -150,9 +150,8 @@ function	__k8s_namespace_use()
 {
 	pNamespace="$1"
 
-	kubectl config set-context --current --namespace="${pNamespace}"
+	${CMD_KUBECTL} config set-context --current --namespace="${pNamespace}"
 }
 
 # ##############################################################################
 # ##############################################################################
-
