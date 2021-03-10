@@ -1,9 +1,17 @@
 #!/bin/bash
 
 
-FILE_BASH_RESOURCE="${HOME}/.bashrc"
-
 THIS_SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+
+# Set the Bash resources file to use
+FILE_BASH_RESOURCE=''
+if [ -f "${HOME}/.bash_profile" ]
+then
+	FILE_BASH_RESOURCE="${HOME}/.bash_profile"
+else
+	FILE_BASH_RESOURCE="${HOME}/.bashrc"
+fi
 
 
 # Check that there's no trace of the function to avoid multiple declarations
