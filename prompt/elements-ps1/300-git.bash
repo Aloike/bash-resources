@@ -9,6 +9,7 @@ PROMPT_FMT_GIT_ALIASES_DISABLED="${PROMPT_FMT_GIT_ALIASES_DISABLED-${FMT_BLD}${C
 PROMPT_FMT_GIT_BRANCH="${PROMPT_FMT_GIT_BRANCH-${COL_FG_LGRY}}"
 PROMPT_FMT_GIT_LOCALREPO="${PROMPT_FMT_GIT_LOCALREPO-${COL_FG_LMAG}}"
 PROMPT_FMT_GIT_PATH="${PROMPT_FMT_GIT_PATH-${COL_FG_CYN}}"
+PROMPT_GIT_SYMBOL_BRANCH="${PROMPT_GIT_SYMBOL_BRANCH-\u2387}"
 
 
 
@@ -17,7 +18,6 @@ PROMPT_FMT_GIT_PATH="${PROMPT_FMT_GIT_PATH-${COL_FG_CYN}}"
 
 function	bash_prompt_command_gitInfos()
 {
-	local lGitStr=""
 	local lGitPath="$(git rev-parse --show-toplevel 2>/dev/null)"
 	if [ ! -z "${lGitPath}" ]
 	then
@@ -53,7 +53,7 @@ function	bash_prompt_command_gitInfos()
 		_prompt_echo_boxSeparator
 		_prompt_echo_box	\
 			"${PROMPT_FMT_GIT_BRANCH}"	\
-			"${lGitBranch}"
+			"${PROMPT_GIT_SYMBOL_BRANCH} ${lGitBranch}"
 
 		_prompt_echo_boxSeparator
 		_prompt_echo_box	\
